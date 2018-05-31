@@ -4,8 +4,8 @@ const ms = require('ms')
 const crypto = require('crypto')
 const assert = require('assert')
 const devp2p = require('../lib')
-const SECBlock = require('secjs-block')
-const SECTx = require('secjs-tx')
+// const SECBlock = require('secjs-block')
+// const SECTx = require('secjs-tx')
 
 const port = '30303'
 const PRIVATE_KEY = crypto.randomBytes(32)
@@ -125,9 +125,11 @@ rlp.on('peer:added', (peer) => {
     } else {
       requests.msgTypes[code] = 1
     }
+    console.log(code)
 
     switch (code) {
       case devp2p.SEC.MESSAGE_CODES.NEW_BLOCK_HASHES:
+        console.log('NEW_BLOCK_HASHES')
         if (!forkVerified) break
         for (let item of payload) {
           const blockHash = item[0]
@@ -140,14 +142,18 @@ rlp.on('peer:added', (peer) => {
         break
 
       case devp2p.SEC.MESSAGE_CODES.TX:
+        console.log('TX')
         if (!forkVerified) break
         for (let item of payload) {
-          const tx = new SECTx(item)
-          if (isValidTx(tx)) onNewTx(tx, peer)
+          // added
+          console.log(item)
+          // const tx = new SECTx(item)
+          // if (isValidTx(tx)) onNewTx(tx, peer)
         }
         break
 
       case devp2p.SEC.MESSAGE_CODES.GET_BLOCK_HEADERS:
+        console.log('GET_BLOCK_HEADERS')
         const headers = []
         if (devp2p._util.buffer2int(payload[0]) === CHECK_BLOCK_NR) {
           headers.push(CHECK_BLOCK_HEADER)
@@ -160,6 +166,7 @@ rlp.on('peer:added', (peer) => {
         break
 
       case devp2p.SEC.MESSAGE_CODES.BLOCK_HEADERS:
+        console.log('BLOCK_HEADERS')
         if (!forkVerified) {
           if (payload.length !== 1) {
             console.log(`${addr} expected one header for ${CHECK_BLOCK_TITLE} verify (received: ${payload.length})`)
@@ -167,12 +174,14 @@ rlp.on('peer:added', (peer) => {
             break
           }
           const expectedHash = CHECK_BLOCK
-          const header = new SECBlock.Header(payload[0])
-          if (header.hash().toString('hex') === expectedHash) {
-            console.log(`${addr} verified to be on the same side of the ${CHECK_BLOCK_TITLE}`)
-            clearTimeout(forkDrop)
-            forkVerified = true
-          }
+          // added
+          console.log(expectedHash)
+          // const header = new SECBlock.Header(payload[0])
+          // if (header.hash().toString('hex') === expectedHash) {
+          //   console.log(`${addr} verified to be on the same side of the ${CHECK_BLOCK_TITLE}`)
+          //   clearTimeout(forkDrop)
+          //   forkVerified = true
+          // }
         } else {
           if (payload.length > 1) {
             console.log(`${addr} not more than one block header expected (received: ${payload.length})`)
@@ -180,25 +189,28 @@ rlp.on('peer:added', (peer) => {
           }
 
           let isValidPayload = false
-          const header = new SECBlock.Header(payload[0])
+          // const header = new SECBlock.Header(payload[0])
           while (requests.headers.length > 0) {
             const blockHash = requests.headers.shift()
-            if (header.hash().equals(blockHash)) {
-              isValidPayload = true
-              setTimeout(() => {
-                sec.sendMessage(devp2p.SEC.MESSAGE_CODES.GET_BLOCK_BODIES, [blockHash])
-                requests.bodies.push(header)
-              }, ms('0.1s'))
-              break
-            }
+            // added
+            console.log(blockHash)
+            // if (header.hash().equals(blockHash)) {
+            //   isValidPayload = true
+            //   setTimeout(() => {
+            //     sec.sendMessage(devp2p.SEC.MESSAGE_CODES.GET_BLOCK_BODIES, [blockHash])
+            //     requests.bodies.push(header)
+            //   }, ms('0.1s'))
+            //   break
+            // }
           }
-          if (!isValidPayload) {
-            console.log(`${addr} received wrong block header ${header.hash().toString('hex')}`)
-          }
+          // if (!isValidPayload) {
+          //   console.log(`${addr} received wrong block header ${header.hash().toString('hex')}`)
+          // }
         }
         break
 
       case devp2p.SEC.MESSAGE_CODES.GET_BLOCK_BODIES:
+        console.log('GET_BLOCK_BODIES')
         if (requests.headers.length === 0 && requests.msgTypes[code] >= 8) {
           peer.disconnect(devp2p.RLPx.DISCONNECT_REASONS.USELESS_PEER)
         } else {
@@ -207,6 +219,7 @@ rlp.on('peer:added', (peer) => {
         break
 
       case devp2p.SEC.MESSAGE_CODES.BLOCK_BODIES:
+        console.log('BLOCK_BODIES')
         if (!forkVerified) break
         if (payload.length !== 1) {
           console.log(`${addr} not more than one block body expected (received: ${payload.length})`)
@@ -215,13 +228,14 @@ rlp.on('peer:added', (peer) => {
         let isValidPayload = false
         while (requests.bodies.length > 0) {
           const header = requests.bodies.shift()
-          const block = new SECBlock([header.raw, payload[0][0], payload[0][1]])
-          const isValid = await isValidBlock(block)
-          if (isValid) {
-            isValidPayload = true
-            onNewBlock(block, peer)
-            break
-          }
+          console.log(header)
+          // const block = new SECBlock([header.raw, payload[0][0], payload[0][1]])
+          // const isValid = await isValidBlock(block)
+          // if (isValid) {
+          //   isValidPayload = true
+          //   onNewBlock(block, peer)
+          //   break
+          // }
         }
         if (!isValidPayload) {
           console.log(`${addr} received wrong block body`)
@@ -229,10 +243,11 @@ rlp.on('peer:added', (peer) => {
         break
 
       case devp2p.SEC.MESSAGE_CODES.NEW_BLOCK:
+        console.log('NEW_BLOCK')
         if (!forkVerified) break
-        const newBlock = new SECBlock(payload[0])
-        const isValidNewBlock = await isValidBlock(newBlock)
-        if (isValidNewBlock) onNewBlock(newBlock, peer)
+        // const newBlock = new SECBlock(payload[0])
+        // const isValidNewBlock = await isValidBlock(newBlock)
+        // if (isValidNewBlock) onNewBlock(newBlock, peer)
         break
     }
   })
