@@ -10,10 +10,10 @@ const devp2p = require('../lib')
 const port = '30303'
 const PRIVATE_KEY = crypto.randomBytes(32)
 const nodes = [{
-  'ip': '192.168.1.100',
+  'ip': '192.168.2.109',
   'port': '30303'
 }, {
-  'ip': '192.168.1.165',
+  'ip': '192.168.2.100',
   'port': '30303'
 }]
 
@@ -129,6 +129,7 @@ rlp.on('peer:added', (peer) => {
 
     switch (code) {
       case devp2p.SEC.MESSAGE_CODES.NEW_BLOCK_HASHES:
+        // TODO: console
         console.log('NEW_BLOCK_HASHES')
         if (!forkVerified) break
         for (let item of payload) {
@@ -142,10 +143,11 @@ rlp.on('peer:added', (peer) => {
         break
 
       case devp2p.SEC.MESSAGE_CODES.TX:
+        // TODO: console
         console.log('TX')
         if (!forkVerified) break
         for (let item of payload) {
-          // added
+          // Added
           console.log(item)
           // const tx = new SECTx(item)
           // if (isValidTx(tx)) onNewTx(tx, peer)
@@ -153,6 +155,7 @@ rlp.on('peer:added', (peer) => {
         break
 
       case devp2p.SEC.MESSAGE_CODES.GET_BLOCK_HEADERS:
+        // TODO: console
         console.log('GET_BLOCK_HEADERS')
         const headers = []
         if (devp2p._util.buffer2int(payload[0]) === CHECK_BLOCK_NR) {
@@ -166,6 +169,7 @@ rlp.on('peer:added', (peer) => {
         break
 
       case devp2p.SEC.MESSAGE_CODES.BLOCK_HEADERS:
+        // TODO: console
         console.log('BLOCK_HEADERS')
         if (!forkVerified) {
           if (payload.length !== 1) {
@@ -174,7 +178,7 @@ rlp.on('peer:added', (peer) => {
             break
           }
           const expectedHash = CHECK_BLOCK
-          // added
+          // Added
           console.log(expectedHash)
           // const header = new SECBlock.Header(payload[0])
           // if (header.hash().toString('hex') === expectedHash) {
@@ -192,7 +196,7 @@ rlp.on('peer:added', (peer) => {
           // const header = new SECBlock.Header(payload[0])
           while (requests.headers.length > 0) {
             const blockHash = requests.headers.shift()
-            // added
+            // Added
             console.log(blockHash)
             // if (header.hash().equals(blockHash)) {
             //   isValidPayload = true
@@ -203,6 +207,11 @@ rlp.on('peer:added', (peer) => {
             //   break
             // }
           }
+          if (!isValidPayload) {
+            // Added
+            console.log('inValidPayload')
+            // console.log(`${addr} received wrong block header ${header.hash().toString('hex')}`)
+          }
           // if (!isValidPayload) {
           //   console.log(`${addr} received wrong block header ${header.hash().toString('hex')}`)
           // }
@@ -210,6 +219,7 @@ rlp.on('peer:added', (peer) => {
         break
 
       case devp2p.SEC.MESSAGE_CODES.GET_BLOCK_BODIES:
+        // TODO: console
         console.log('GET_BLOCK_BODIES')
         if (requests.headers.length === 0 && requests.msgTypes[code] >= 8) {
           peer.disconnect(devp2p.RLPx.DISCONNECT_REASONS.USELESS_PEER)
@@ -219,6 +229,7 @@ rlp.on('peer:added', (peer) => {
         break
 
       case devp2p.SEC.MESSAGE_CODES.BLOCK_BODIES:
+        // TODO: console
         console.log('BLOCK_BODIES')
         if (!forkVerified) break
         if (payload.length !== 1) {
@@ -228,6 +239,7 @@ rlp.on('peer:added', (peer) => {
         let isValidPayload = false
         while (requests.bodies.length > 0) {
           const header = requests.bodies.shift()
+          // Added
           console.log(header)
           // const block = new SECBlock([header.raw, payload[0][0], payload[0][1]])
           // const isValid = await isValidBlock(block)
@@ -243,8 +255,11 @@ rlp.on('peer:added', (peer) => {
         break
 
       case devp2p.SEC.MESSAGE_CODES.NEW_BLOCK:
+        // TODO: console
         console.log('NEW_BLOCK')
         if (!forkVerified) break
+        // Added
+        console.log(payload[0])
         // const newBlock = new SECBlock(payload[0])
         // const isValidNewBlock = await isValidBlock(newBlock)
         // if (isValidNewBlock) onNewBlock(newBlock, peer)
@@ -267,7 +282,6 @@ rlp.on('peer:error', (peer, err) => {
     console.error(chalk.red(`RPL | peer:error Event | Peer Error (${getPeerAddr(peer)}): ${err.message}`))
     return
   }
-
   console.error(chalk.red(`RPL | peer:error Event | Peer error (${getPeerAddr(peer)}): ${err.stack || err}`))
 })
 
@@ -279,7 +293,7 @@ const txCache = new LRUCache({
   max: 1000
 })
 
-function onNewTx (tx, peer) {
+function onNewTx(tx, peer) {
   const txHashHex = tx.hash().toString('hex')
   if (txCache.has(txHashHex)) return
   txCache.set(txHashHex, true)
@@ -290,7 +304,7 @@ const blocksCache = new LRUCache({
   max: 100
 })
 
-function onNewBlock (block, peer) {
+function onNewBlock(block, peer) {
   const blockHashHex = block.hash().toString('hex')
   const blockNumber = devp2p._util.buffer2int(block.header.number)
   if (blocksCache.has(blockHashHex)) return
@@ -301,11 +315,11 @@ function onNewBlock (block, peer) {
   for (let tx of block.transactions) onNewTx(tx, peer)
 }
 
-function isValidTx (tx) {
+function isValidTx(tx) {
   return tx.validate(false)
 }
 
-async function isValidBlock (block) {
+async function isValidBlock(block) {
   if (!block.validateUnclesHash()) return false
   if (!block.transactions.every(isValidTx)) return false
   return new Promise((resolve, reject) => {
