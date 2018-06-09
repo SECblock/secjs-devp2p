@@ -4,16 +4,17 @@ const ms = require('ms')
 const crypto = require('crypto')
 const assert = require('assert')
 const devp2p = require('../lib')
+// const rlp = require('@sec-block/secjs-rlp')
 // const SECBlock = require('secjs-block')
 // const SECTx = require('secjs-tx')
 
 const port = '30303'
 const PRIVATE_KEY = crypto.randomBytes(32)
 const nodes = [{
-  'ip': '192.168.2.109',
+  'ip': '192.168.1.165',
   'port': '30303'
 }, {
-  'ip': '192.168.2.100',
+  'ip': '192.168.1.100',
   'port': '30303'
 }]
 
