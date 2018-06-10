@@ -136,8 +136,8 @@ class ECIES {
       Buffer.from([0x04])
     ]
     // TODO: dev test removable
-    console.log(chalk.gray('ECIES createAuthEIP8(): '))
-    console.log(chalk.gray(data))
+    console.log(chalk.cyan('ECIES createAuthEIP8(): '))
+    console.log(chalk.gray(JSON.stringify(data)))
 
     const dataRLP = rlp.encode(data)
     const pad = crypto.randomBytes(100 + Math.floor(Math.random() * 151)) // Random padding between 100, 250
@@ -184,12 +184,10 @@ class ECIES {
       remotePublicKey = util.id2pk(decrypted.slice(97, 161))
       nonce = decrypted.slice(161, 193)
     } else {
-      // TODO: dev test removable
-      console.log(chalk.gray('ECIES parseAuthPlain(): '))
-      console.log(chalk.gray(sharedMacData))
-      console.log(chalk.gray(data))
-      console.log(chalk.gray(decrypted))
       const decoded = rlp.decode(decrypted)
+      // TODO: dev test removable
+      console.log(chalk.cyan('ECIES parseAuthPlain(): '))
+      console.log(chalk.gray(JSON.stringify(decoded)))
 
       signature = decoded[0].slice(0, 64)
       recoveryId = decoded[0][64]
@@ -225,8 +223,8 @@ class ECIES {
       Buffer.from([0x04])
     ]
     // TODO: dev test removable
-    console.log(chalk.gray('ECIES createAckEIP8(): '))
-    console.log(chalk.gray(data))
+    console.log(chalk.cyan('ECIES createAckEIP8(): '))
+    console.log(chalk.gray(JSON.stringify(data)))
 
     const dataRLP = rlp.encode(data)
     const pad = crypto.randomBytes(100 + Math.floor(Math.random() * 151)) // Random padding between 100, 250
@@ -263,13 +261,10 @@ class ECIES {
       remoteEphemeralPublicKey = util.id2pk(decrypted.slice(0, 64))
       remoteNonce = decrypted.slice(64, 96)
     } else {
-      // TODO: dev test removable
-      console.log(chalk.gray('ECIES parseAckPlain(): '))
-      console.log(chalk.gray(sharedMacData))
-      console.log(chalk.gray(data))
-      console.log(chalk.gray(decrypted))
-
       const decoded = rlp.decode(decrypted)
+      // TODO: dev test removable
+      console.log(chalk.cyan('ECIES parseAckPlain(): '))
+      console.log(chalk.gray(JSON.stringify(decoded)))
 
       remoteEphemeralPublicKey = util.id2pk(decoded[0])
       remoteNonce = decoded[1]
@@ -294,9 +289,6 @@ class ECIES {
 
   createHeader (size) {
     size = util.zfill(util.int2buffer(size), 3)
-    // TODO: dev test removable
-    console.log(chalk.gray('ECIES createHeader(): '))
-    console.log(chalk.gray(size))
 
     let header = Buffer.concat([size, rlp.encode([0, 0])])
     header = util.zfill(header, 16, false)
@@ -304,6 +296,9 @@ class ECIES {
 
     this._egressMac.updateHeader(header)
     const tag = this._egressMac.digest()
+    // TODO: dev test removable
+    console.log(chalk.cyan('ECIES createHeader(): '))
+    console.log(chalk.gray(JSON.stringify(header)))
 
     return Buffer.concat([header, tag])
   }
