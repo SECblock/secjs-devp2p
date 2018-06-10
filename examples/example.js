@@ -4,7 +4,6 @@ const ms = require('ms')
 const crypto = require('crypto')
 const assert = require('assert')
 const devp2p = require('../lib')
-// const rlp = require('@sec-block/secjs-rlp')
 // const SECBlock = require('secjs-block')
 // const SECTx = require('secjs-tx')
 
