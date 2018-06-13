@@ -10,10 +10,10 @@ const devp2p = require('../lib')
 const port = '30303'
 const PRIVATE_KEY = crypto.randomBytes(32)
 const nodes = [{
-  'ip': '192.168.1.165',
+  'ip': '192.168.2.100',
   'port': '30303'
 }, {
-  'ip': '192.168.1.100',
+  'ip': '192.168.2.109',
   'port': '30303'
 }]
 
