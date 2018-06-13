@@ -294,9 +294,9 @@ class SECRlpEncode {
     console.log(input.toString('base64'))
     console.log(decoded)
 
-    // if (decoded.remainder.length !== 0) {
-    //   throw new Error('invalid remainder')
-    // }
+    if (decoded.remainder.length !== 0) {
+      throw new Error('invalid remainder')
+    }
 
     return decoded.data
   }
