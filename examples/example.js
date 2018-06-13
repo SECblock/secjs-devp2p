@@ -10,10 +10,10 @@ const devp2p = require('../lib')
 const port = '30303'
 const PRIVATE_KEY = crypto.randomBytes(32)
 const nodes = [{
-  'ip': '192.168.2.109',
+  'ip': '192.168.1.165',
   'port': '30303'
 }, {
-  'ip': '192.168.2.100',
+  'ip': '192.168.1.100',
   'port': '30303'
 }]
 
@@ -125,6 +125,7 @@ rlp.on('peer:added', (peer) => {
     } else {
       requests.msgTypes[code] = 1
     }
+    console.log(code)
 
     switch (code) {
       case devp2p.SEC.MESSAGE_CODES.NEW_BLOCK_HASHES:
@@ -211,6 +212,9 @@ rlp.on('peer:added', (peer) => {
             console.log('inValidPayload')
             // console.log(`${addr} received wrong block header ${header.hash().toString('hex')}`)
           }
+          // if (!isValidPayload) {
+          //   console.log(`${addr} received wrong block header ${header.hash().toString('hex')}`)
+          // }
         }
         break
 
