@@ -12,6 +12,8 @@ const {
 const Peer = require('../rlpx/peer')
 
 const createDebugLogger = require('debug')
+// TODO: Debug data removable
+const chalk = require('chalk')
 const debug = createDebugLogger('devp2p:sec')
 
 const MESSAGE_CODES = {
@@ -75,7 +77,10 @@ class SEC extends EventEmitter {
       default:
         return
     }
-
+    // TODO:
+    console.log(chalk.red('EMIT Message '))
+    console.log(code)
+    console.log(payload)
     this.emit('message', code, payload)
   }
 

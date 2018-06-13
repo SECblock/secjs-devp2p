@@ -40,6 +40,7 @@
     "unit": "tape -r babel-register test/*.js"
   },
   "dependencies": {
+    "@sec-block/secjs-block": "^1.0.8",
     "@sec-block/secjs-rlp": "^1.1.2",
     "babel-runtime": "^6.11.6",
     "bl": "^1.1.2",
