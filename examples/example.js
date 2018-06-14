@@ -86,7 +86,7 @@ for (let bootnode of BOOTNODES) {
 }
 
 // accept incoming connections
-// ndp.bind(port, '0.0.0.0')
+ndp.bind(port, '0.0.0.0')
 
 // -------------------------------------  RLP TRANSPORT PROTOCL  ------------------------------------
 rlp.on('peer:added', (peer) => {
