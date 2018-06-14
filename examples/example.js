@@ -117,7 +117,7 @@ rlp.on('peer:added', (peer) => {
   let forkVerified = false
   sec.once('status', () => {
     console.log(chalk.red('status'))
-    sec.sendMessage(devp2p.SEC.MESSAGE_CODES.GET_BLOCK_HEADERS, [CHECK_BLOCK_NR, 1, 0, 0])
+    // sec.sendMessage(devp2p.SEC.MESSAGE_CODES.GET_BLOCK_HEADERS, [CHECK_BLOCK_NR, 1, 0, 0])
     forkDrop = setTimeout(() => {
       peer.disconnect(devp2p.RLPx.DISCONNECT_REASONS.USELESS_PEER)
     }, ms('15s'))

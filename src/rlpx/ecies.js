@@ -4,7 +4,6 @@ const Buffer = require('safe-buffer').Buffer
 const SECRlpEncode = require('@sec-block/secjs-rlp')
 const util = require('../util')
 const MAC = require('./mac')
-const debug = require('debug')('devp2p:rlpx:ecies')
 const rlp = new SECRlpEncode()
 
 function ecdhX (publicKey, privateKey) {
