@@ -222,8 +222,10 @@ class Peer extends EventEmitter {
         }
 
         if (this._remoteClientIdFilter) {
+          console.log(this._remoteClientIdFilter)
           for (let filterStr of this._remoteClientIdFilter) {
             if (this._hello.clientId.toLowerCase().includes(filterStr.toLowerCase())) {
+              console.log(this._hello.clientId.toLowerCase())
               debug('Useless_Peer_LowerCase')
               return this.disconnect(Peer.DISCONNECT_REASONS.USELESS_PEER)
             }

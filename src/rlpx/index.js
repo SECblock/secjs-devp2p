@@ -31,7 +31,6 @@ class RLPx extends EventEmitter {
     this._remoteClientIdFilter = options.remoteClientIdFilter
     this._capabilities = options.capabilities
     this._listenPort = options.listenPort
-
     // NDP
     this._ndp = options.ndp || null
     if (this._ndp !== null) {
@@ -152,7 +151,6 @@ class RLPx extends EventEmitter {
 
   _onConnect (socket, peerId) {
     debug(`connected to ${socket.remoteAddress}:${socket.remotePort}, handshake waiting..`)
-
     const peer = new Peer({
       socket: socket,
       remoteId: peerId,

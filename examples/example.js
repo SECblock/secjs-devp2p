@@ -29,7 +29,7 @@ const ndp = new devp2p.NDP(PRIVATE_KEY, {
 
 // --------------------------  RLP TRANSPORT PROTOCL  --------------------------
 const CHAIN_ID = 1
-const REMOTE_CLIENTID_FILTER = ['sec']
+const REMOTE_CLIENTID_FILTER = []
 // const REMOTE_CLIENTID_FILTER = ['go1.5', 'go1.6', 'go1.7', 'quorum', 'pirl', 'ubiq', 'gmc', 'gwhale', 'prichain']
 const CHECK_BLOCK_TITLE = 'Yuan Li' // Only for debugging/console output
 const CHECK_BLOCK_NR = 1
@@ -43,6 +43,7 @@ const rlp = new devp2p.RLPx(PRIVATE_KEY, {
   capabilities: [
     devp2p.SEC.sec
   ],
+  clientId: 'sec',
   remoteClientIdFilter: REMOTE_CLIENTID_FILTER,
   listenPort: null
 })
@@ -58,12 +59,6 @@ ndp.on('close', () => console.log(chalk.green('NDP | NDP Server closed')))
 ndp.on('error', err => console.error(chalk.red(`NDP | NDP error: ${err.stack || err}`)))
 
 ndp.on('peer:added', peer => {
-  let _peer = {
-    id: peer.id,
-    address: peer.address,
-    port: peer.udpPort
-  }
-  rlp.connect(_peer)
   const info = `(${peer.id.toString('hex')}, ${peer.address}:${peer.udpPort}:${peer.tcpPort})`
   console.log(chalk.green(`NDP | peer:added Event | New peer: ${info} (total: ${ndp.getPeers().length})`))
 })

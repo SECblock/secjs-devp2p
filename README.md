@@ -122,8 +122,8 @@ Creates new RLPx object
 - `privateKey` - Key for message encoding/signing.
 - `options.timeout` - Peer `ping` timeout in ms (default: ``10s``).
 - `options.maxPeers` - Max number of peer connections (default: ``10``).
-- `options.clientId` - Client ID string (default example: ``secjs1``).
-- `options.remoteClientIdFilter` - Optional list of client ID filter strings (e.g. `['secjs1']`).
+- `options.clientId` - Client ID string (default example: ``sec``).
+- `options.remoteClientIdFilter` - Optional list of client ID filter strings (e.g. `['sec']`).
 - `options.capabilities` - Upper layer protocol capabilities, e.g. `[devp2p.SEC.sec]`.
 - `options.listenPort` - The listening port for the server or ``null`` for default.
 - `options.ndp` - `NDP` object for the peers to connect to (default: ``null``, no `NDP` peer management).
