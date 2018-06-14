@@ -149,7 +149,7 @@ class Peer extends EventEmitter {
   _parsePacketContent (data) {
     switch (this._state) {
       case 'Header':
-        debug(`Received header ${this._socket.remoteAddress}:${this._socket.remotePort} | ${data.toString('base64')}`)
+        debug(`Received header ${this._socket.remoteAddress}:${this._socket.remotePort}}`)
         const size = this._eciesSession.parseHeader(data)
         this._state = 'Body'
         this._nextPacketSize = size + 16

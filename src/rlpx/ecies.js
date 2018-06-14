@@ -278,7 +278,6 @@ class ECIES {
 
     this._egressMac.updateHeader(header)
     const tag = this._egressMac.digest()
-    debug(`ECIES create Header: ${header.toString('base64')}`)
     return Buffer.concat([header, tag])
   }
 
