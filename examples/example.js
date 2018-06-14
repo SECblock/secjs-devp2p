@@ -67,16 +67,13 @@ ndp.on('peer:removed', peer => {
   console.log(chalk.yellow(`NDP | peer:removed Event | Remove peer: ${peer.id.toString('hex')} (total: ${ndp.getPeers().length})`))
 })
 
-// uncomment, if you want to check peer:new event
-/*
+// check peer:new event
 ndp.on('peer:new', peer => {
   const info = `(${peer.id.toString('hex')}, ${peer.address}:${peer.udpPort}:${peer.tcpPort})`
   console.log(chalk.green(`NDP | peer:new Event | New peer: ${info} (total: ${ndp.getPeers().length})`))
 })
-*/
 
-// uncomment, if you want add bootstrap nodes
-/*
+// add bootstrap nodes
 const BOOTNODES = nodes.map((node) => {
   return {
     address: node.ip,
@@ -87,10 +84,9 @@ const BOOTNODES = nodes.map((node) => {
 for (let bootnode of BOOTNODES) {
   ndp.bootstrap(bootnode).catch((err) => console.error(chalk.bold.red(err.stack || err)))
 }
-*/
 
 // accept incoming connections
-ndp.bind(port, '0.0.0.0')
+// ndp.bind(port, '0.0.0.0')
 
 // -------------------------------------  RLP TRANSPORT PROTOCL  ------------------------------------
 rlp.on('peer:added', (peer) => {
@@ -300,7 +296,7 @@ const txCache = new LRUCache({
   max: 1000
 })
 
-function onNewTx(tx, peer) {
+function onNewTx (tx, peer) {
   const txHashHex = tx.hash().toString('hex')
   if (txCache.has(txHashHex)) return
   txCache.set(txHashHex, true)
@@ -311,7 +307,7 @@ const blocksCache = new LRUCache({
   max: 100
 })
 
-function onNewBlock(block, peer) {
+function onNewBlock (block, peer) {
   const blockHashHex = block.hash().toString('hex')
   const blockNumber = devp2p._util.buffer2int(block.header.number)
   if (blocksCache.has(blockHashHex)) return
@@ -322,11 +318,11 @@ function onNewBlock(block, peer) {
   for (let tx of block.transactions) onNewTx(tx, peer)
 }
 
-function isValidTx(tx) {
+function isValidTx (tx) {
   return tx.validate(false)
 }
 
-async function isValidBlock(block) {
+async function isValidBlock (block) {
   if (!block.validateUnclesHash()) return false
   if (!block.transactions.every(isValidTx)) return false
   return new Promise((resolve, reject) => {
@@ -343,15 +339,15 @@ async function isValidBlock(block) {
 // accept incoming connections
 rlp.listen(30303, '0.0.0.0')
 
-nodes.forEach((node) => {
-  ndp.addPeer({
-    address: node.ip,
-    udpPort: node.port,
-    tcpPort: node.port
-  }).then((peer) => {
-    console.log(chalk.green(`  Add Peer: ${peer.id.toString('hex')}, ${peer.address}:${peer.udpPort}:${peer.tcpPort}`))
-  }).catch((err) => console.log(`error on connection to local node: ${err.stack || err}`))
-})
+// nodes.forEach((node) => {
+//   ndp.addPeer({
+//     address: node.ip,
+//     udpPort: node.port,
+//     tcpPort: node.port
+//   }).then((peer) => {
+//     console.log(chalk.green(`  Add Peer: ${peer.id.toString('hex')}, ${peer.address}:${peer.udpPort}:${peer.tcpPort}`))
+//   }).catch((err) => console.log(`error on connection to local node: ${err.stack || err}`))
+// })
 
 setInterval(() => {
   const peers = ndp.getPeers()
@@ -361,7 +357,9 @@ setInterval(() => {
     console.log(chalk.green(`  Peer: ${peer.id.toString('hex')}, ${peer.address}:${peer.udpPort}:${peer.tcpPort}`))
   })
   const rlpPeers = rlp.getPeers()
-
+  rlpPeers.forEach((peer, index) => {
+    console.log(`Peer ${index} : ${getPeerAddr(peer)})`)
+  })
   const openSlots = rlp._getOpenSlots()
   const queueLength = rlp._peersQueue.length
   const queueLength2 = rlp._peersQueue.filter((o) => o.ts <= Date.now()).length
