@@ -353,16 +353,12 @@ for (let bootnode of BOOTNODES) {
 setInterval(() => {
   const peers = ndp.getPeers()
   const peersCount = peers.length
-  console.log(chalk.yellow(`Total nodes in NDP: ${peersCount}`))
-  peers.forEach(peer => {
-    console.log(chalk.green(`  Peer: ${peer.id.toString('hex')}, ${peer.address}:${peer.udpPort}:${peer.tcpPort}`))
-  })
   const rlpPeers = rlp.getPeers()
-  rlpPeers.forEach((peer, index) => {
-    console.log(`Peer ${index} : ${getPeerAddr(peer)})`)
-  })
   const openSlots = rlp._getOpenSlots()
   const queueLength = rlp._peersQueue.length
   const queueLength2 = rlp._peersQueue.filter((o) => o.ts <= Date.now()).length
-  console.log(chalk.yellow(`RLP Info: peers: ${rlpPeers.length}, open slots: ${openSlots}, queue: ${queueLength} / ${queueLength2}`))
+  console.log(chalk.yellow(`Total nodes in NDP: ${peersCount}, RLP Info: peers: ${rlpPeers.length}, open slots: ${openSlots}, queue: ${queueLength} / ${queueLength2}`))
+  rlpPeers.forEach((peer, index) => {
+    console.log(chalk.yellow(`    Peer ${index + 1} : ${getPeerAddr(peer)}) in RLP`))
+  })
 }, ms('5s'))
