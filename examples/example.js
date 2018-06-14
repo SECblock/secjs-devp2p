@@ -73,18 +73,6 @@ ndp.on('peer:new', peer => {
   console.log(chalk.green(`NDP | peer:new Event | New peer: ${info} (total: ${ndp.getPeers().length})`))
 })
 
-// add bootstrap nodes
-const BOOTNODES = nodes.map((node) => {
-  return {
-    address: node.ip,
-    udpPort: node.port,
-    tcpPort: node.port
-  }
-})
-for (let bootnode of BOOTNODES) {
-  ndp.bootstrap(bootnode).catch((err) => console.error(chalk.bold.red(err.stack || err)))
-}
-
 // accept incoming connections
 ndp.bind(port, '0.0.0.0')
 
@@ -339,6 +327,7 @@ async function isValidBlock (block) {
 // accept incoming connections
 rlp.listen(30303, '0.0.0.0')
 
+// for debug
 // nodes.forEach((node) => {
 //   ndp.addPeer({
 //     address: node.ip,
@@ -348,6 +337,18 @@ rlp.listen(30303, '0.0.0.0')
 //     console.log(chalk.green(`  Add Peer: ${peer.id.toString('hex')}, ${peer.address}:${peer.udpPort}:${peer.tcpPort}`))
 //   }).catch((err) => console.log(`error on connection to local node: ${err.stack || err}`))
 // })
+
+// add bootstrap nodes
+const BOOTNODES = nodes.map((node) => {
+  return {
+    address: node.ip,
+    udpPort: node.port,
+    tcpPort: node.port
+  }
+})
+for (let bootnode of BOOTNODES) {
+  ndp.bootstrap(bootnode).catch((err) => console.error(chalk.bold.red(err.stack || err)))
+}
 
 setInterval(() => {
   const peers = ndp.getPeers()
