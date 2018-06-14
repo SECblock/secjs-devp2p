@@ -4,16 +4,16 @@ const ms = require('ms')
 const crypto = require('crypto')
 const assert = require('assert')
 const devp2p = require('../lib')
+const SECRlpEncode = require('@sec-block/secjs-rlp')
+const secjsRlp = new SECRlpEncode()
 // const SECBlock = require('secjs-block')
 // const SECTx = require('secjs-tx')
 
 const port = '30303'
 const PRIVATE_KEY = crypto.randomBytes(32)
+
 const nodes = [{
   'ip': '192.168.1.100',
-  'port': '30303'
-}, {
-  'ip': '192.168.1.165',
   'port': '30303'
 }]
 
@@ -35,7 +35,7 @@ const CHECK_BLOCK_TITLE = 'Yuan Li' // Only for debugging/console output
 const CHECK_BLOCK_NR = 1
 // const CHECK_BLOCK_NR = 4370000
 const CHECK_BLOCK = 'b1fcff633029ee18ab6482b58ff8b6e95dd7c82a954c852157152a7a6d32785e'
-const CHECK_BLOCK_HEADER = require('rlp-encoding').decode(Buffer.from('f9020aa0a0890da724dd95c90a72614c3a906e402134d3859865f715f5dfb398ac00f955a01dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347942a65aca4d5fc5b5c859090a6c34d164135398226a074cccff74c5490fbffc0e6883ea15c0e1139e2652e671f31f25f2a36970d2f87a00e750bf284c2b3ed1785b178b6f49ff3690a3a91779d400de3b9a3333f699a80a0c68e3e82035e027ade5d966c36a1d49abaeec04b83d64976621c355e58724b8bb90100040019000040000000010000000000021000004020100688001a05000020816800000010a0000100201400000000080100020000000400080000800004c0200000201040000000018110400c000000200001000000280000000100000010010080000120010000050041004000018000204002200804000081000011800022002020020140000000020005080001800000000008102008140008600000000100000500000010080082002000102080000002040120008820400020100004a40801000002a0040c000010000114000000800000050008300020100000000008010000000100120000000040000000808448200000080a00000624013000000080870552416761fabf83475b02836652b383661a72845a25c530894477617266506f6f6ca0dc425fdb323c469c91efac1d2672dfdd3ebfde8fa25d68c1b3261582503c433788c35ca7100349f430', 'hex'))
+const CHECK_BLOCK_HEADER = secjsRlp.decode(Buffer.from('f9020aa0a0890da724dd95c90a72614c3a906e402134d3859865f715f5dfb398ac00f955a01dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347942a65aca4d5fc5b5c859090a6c34d164135398226a074cccff74c5490fbffc0e6883ea15c0e1139e2652e671f31f25f2a36970d2f87a00e750bf284c2b3ed1785b178b6f49ff3690a3a91779d400de3b9a3333f699a80a0c68e3e82035e027ade5d966c36a1d49abaeec04b83d64976621c355e58724b8bb90100040019000040000000010000000000021000004020100688001a05000020816800000010a0000100201400000000080100020000000400080000800004c0200000201040000000018110400c000000200001000000280000000100000010010080000120010000050041004000018000204002200804000081000011800022002020020140000000020005080001800000000008102008140008600000000100000500000010080082002000102080000002040120008820400020100004a40801000002a0040c000010000114000000800000050008300020100000000008010000000100120000000040000000808448200000080a00000624013000000080870552416761fabf83475b02836652b383661a72845a25c530894477617266506f6f6ca0dc425fdb323c469c91efac1d2672dfdd3ebfde8fa25d68c1b3261582503c433788c35ca7100349f430', 'hex'))
 
 const rlp = new devp2p.RLPx(PRIVATE_KEY, {
   ndp: ndp,
@@ -126,12 +126,12 @@ rlp.on('peer:added', (peer) => {
 
   sec.on('message', async (code, payload) => {
     console.log(chalk.red('Message'))
+    console.log(code)
     if (code in requests.msgTypes) {
       requests.msgTypes[code] += 1
     } else {
       requests.msgTypes[code] = 1
     }
-    console.log(code)
 
     switch (code) {
       case devp2p.SEC.MESSAGE_CODES.NEW_BLOCK_HASHES:
@@ -359,9 +359,8 @@ setInterval(() => {
   peers.forEach(peer => {
     console.log(chalk.green(`  Peer: ${peer.id.toString('hex')}, ${peer.address}:${peer.udpPort}:${peer.tcpPort}`))
   })
-  const rlpPeers = rlp.getPeers()
-  console.log(rlpPeers)
-  rlpPeers.forEach(peer => {
-    console.log(chalk.green(`  RLP Peer: ${peer.id.toString('hex')}, ${peer.address}:${peer.port}`))
-  })
-}, ms('3s'))
+  const openSlots = rlp._getOpenSlots()
+  const queueLength = rlp._peersQueue.length
+  const queueLength2 = rlp._peersQueue.filter((o) => o.ts <= Date.now()).length
+  console.log(chalk.yellow(`RLP Info: open slots: ${openSlots}, queue: ${queueLength} / ${queueLength2}`))
+}, ms('5s'))

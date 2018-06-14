@@ -1,5 +1,6 @@
 const ip = require('ip')
-const rlp = require('rlp-encoding')
+const SECRlpEncode = require('@sec-block/secjs-rlp')
+const rlp = new SECRlpEncode()
 const secp256k1 = require('secp256k1')
 const Buffer = require('safe-buffer').Buffer
 const {

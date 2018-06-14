@@ -1,7 +1,8 @@
 const {
   EventEmitter
 } = require('events')
-const rlp = require('rlp-encoding')
+const SECRlpEncode = require('@sec-block/secjs-rlp')
+const rlp = new SECRlpEncode()
 const ms = require('ms')
 const Buffer = require('safe-buffer').Buffer
 const {
@@ -12,8 +13,6 @@ const {
 const Peer = require('../rlpx/peer')
 
 const createDebugLogger = require('debug')
-// TODO: Debug data removable
-const chalk = require('chalk')
 const debug = createDebugLogger('devp2p:sec')
 
 const MESSAGE_CODES = {
@@ -77,10 +76,6 @@ class SEC extends EventEmitter {
       default:
         return
     }
-    // TODO:
-    console.log(chalk.red('EMIT Message '))
-    console.log(code)
-    console.log(payload)
     this.emit('message', code, payload)
   }
 

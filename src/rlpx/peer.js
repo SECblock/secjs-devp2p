@@ -1,7 +1,8 @@
 const {
   EventEmitter
 } = require('events')
-const rlp = require('rlp-encoding')
+const SECRlpEncode = require('@sec-block/secjs-rlp')
+const rlp = new SECRlpEncode()
 const util = require('../util')
 const BufferList = require('bl')
 const ms = require('ms')
@@ -222,10 +223,8 @@ class Peer extends EventEmitter {
         }
 
         if (this._remoteClientIdFilter) {
-          console.log(this._remoteClientIdFilter)
           for (let filterStr of this._remoteClientIdFilter) {
             if (this._hello.clientId.toLowerCase().includes(filterStr.toLowerCase())) {
-              console.log(this._hello.clientId.toLowerCase())
               debug('Useless_Peer_LowerCase')
               return this.disconnect(Peer.DISCONNECT_REASONS.USELESS_PEER)
             }

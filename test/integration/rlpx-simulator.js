@@ -19,27 +19,26 @@ test('RLPX: remove node', async (t) => {
   const rlpxs = util.initTwoPeerRLPXSetup(null, null)
 
   async.series([
-      function (cb) {
-        rlpxs[0].on('peer:added', function (peer) {
-          rlpxs[0].disconnect(peer._remoteId)
-          cb(null)
-        })
-      },
-      function (cb) {
-        rlpxs[0].on('peer:removed', function (peer, reason, disconnectWe) {
-          t.equal(reason, Peer.DISCONNECT_REASONS.CLIENT_QUITTING, 'should close with CLIENT_QUITTING disconnect reason')
-          t.equal(rlpxs[0]._getOpenSlots(), 10, 'should have maxPeers open slots left')
-          cb(null)
-        })
-      }
-    ],
-    function (err, results) {
-      if (err) {
-        t.fail('An unexpected error occured.')
-      }
-      util.destroyRLPXs(rlpxs)
-      t.end()
-    })
+    function (cb) {
+      rlpxs[0].on('peer:added', function (peer) {
+        rlpxs[0].disconnect(peer._remoteId)
+        cb(null)
+      })
+    },
+    function (cb) {
+      rlpxs[0].on('peer:removed', function (peer, reason, disconnectWe) {
+        t.equal(reason, Peer.DISCONNECT_REASONS.CLIENT_QUITTING, 'should close with CLIENT_QUITTING disconnect reason')
+        t.equal(rlpxs[0]._getOpenSlots(), 10, 'should have maxPeers open slots left')
+        cb(null)
+      })
+    }
+  ], function (err, results) {
+    if (err) {
+      t.fail('An unexpected error occured.')
+    }
+    util.destroyRLPXs(rlpxs)
+    t.end()
+  })
 })
 
 test('RLPX: test peer queue / refill connections', async (t) => {
@@ -53,31 +52,30 @@ test('RLPX: test peer queue / refill connections', async (t) => {
   rlpxs[0]._ndp.addPeer(peer)
 
   async.series([
-      function (cb) {
-        rlpxs[0].once('peer:added', function (peer) {
-          t.equal(rlpxs[0]._peersQueue.length, 0, 'peers queue should contain no peers')
-          const peer2 = {
-            address: util.localhost,
-            udpPort: util.basePort + 2,
-            tcpPort: util.basePort + 2
-          }
-          rlpxs[0]._ndp.addPeer(peer2)
-          cb(null)
-        })
-      },
-      function (cb) {
-        rlpxs[0].once('peer:added', function (peer) {
-          // FIXME: values not as expected
-          // t.equal(rlpxs[0]._peersQueue.length, 1, 'peers queue should contain one peer')
-          cb(null)
-        })
-      }
-    ],
-    function (err, results) {
-      if (err) {
-        t.fail('An unexpected error occured.')
-      }
-      util.destroyRLPXs(rlpxs)
-      t.end()
-    })
+    function (cb) {
+      rlpxs[0].once('peer:added', function (peer) {
+        t.equal(rlpxs[0]._peersQueue.length, 0, 'peers queue should contain no peers')
+        const peer2 = {
+          address: util.localhost,
+          udpPort: util.basePort + 2,
+          tcpPort: util.basePort + 2
+        }
+        rlpxs[0]._ndp.addPeer(peer2)
+        cb(null)
+      })
+    },
+    function (cb) {
+      rlpxs[0].once('peer:added', function (peer) {
+        // FIXME: values not as expected
+        // t.equal(rlpxs[0]._peersQueue.length, 1, 'peers queue should contain one peer')
+        cb(null)
+      })
+    }
+  ], function (err, results) {
+    if (err) {
+      t.fail('An unexpected error occured.')
+    }
+    util.destroyRLPXs(rlpxs)
+    t.end()
+  })
 })

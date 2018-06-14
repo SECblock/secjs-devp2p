@@ -114,7 +114,6 @@ class RLPx extends EventEmitter {
   }
 
   getPeers () {
-    console.log(this._peers)
     return Array.from(this._peers.values()).filter((item) => item instanceof Peer)
   }
 
