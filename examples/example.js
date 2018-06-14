@@ -360,8 +360,10 @@ setInterval(() => {
   peers.forEach(peer => {
     console.log(chalk.green(`  Peer: ${peer.id.toString('hex')}, ${peer.address}:${peer.udpPort}:${peer.tcpPort}`))
   })
+  const rlpPeers = rlp.getPeers()
+
   const openSlots = rlp._getOpenSlots()
   const queueLength = rlp._peersQueue.length
   const queueLength2 = rlp._peersQueue.filter((o) => o.ts <= Date.now()).length
-  console.log(chalk.yellow(`RLP Info: open slots: ${openSlots}, queue: ${queueLength} / ${queueLength2}`))
+  console.log(chalk.yellow(`RLP Info: peers: ${rlpPeers.length}, open slots: ${openSlots}, queue: ${queueLength} / ${queueLength2}`))
 }, ms('5s'))
