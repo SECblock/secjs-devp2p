@@ -4,9 +4,7 @@ const Buffer = require('safe-buffer').Buffer
 const SECRlpEncode = require('@sec-block/secjs-rlp')
 const util = require('../util')
 const MAC = require('./mac')
-// TODO: dev removalbe
-const chalk = require('chalk')
-
+const debug = require('debug')('devp2p:rlpx:ecies')
 const rlp = new SECRlpEncode()
 
 function ecdhX (publicKey, privateKey) {
@@ -135,10 +133,6 @@ class ECIES {
       this._nonce,
       Buffer.from([0x04])
     ]
-    // TODO: dev test removable
-    console.log(chalk.cyan('ECIES createAuthEIP8(): '))
-    console.log(chalk.gray(JSON.stringify(data)))
-
     const dataRLP = rlp.encode(data)
     const pad = crypto.randomBytes(100 + Math.floor(Math.random() * 151)) // Random padding between 100, 250
     const authMsg = Buffer.concat([dataRLP, pad])
@@ -185,10 +179,6 @@ class ECIES {
       nonce = decrypted.slice(161, 193)
     } else {
       const decoded = rlp.decode(decrypted)
-      // TODO: dev test removable
-      console.log(chalk.cyan('ECIES parseAuthPlain(): '))
-      console.log(chalk.gray(JSON.stringify(decoded)))
-
       signature = decoded[0].slice(0, 64)
       recoveryId = decoded[0][64]
       remotePublicKey = util.id2pk(decoded[1])
@@ -222,10 +212,6 @@ class ECIES {
       this._nonce,
       Buffer.from([0x04])
     ]
-    // TODO: dev test removable
-    console.log(chalk.cyan('ECIES createAckEIP8(): '))
-    console.log(chalk.gray(JSON.stringify(data)))
-
     const dataRLP = rlp.encode(data)
     const pad = crypto.randomBytes(100 + Math.floor(Math.random() * 151)) // Random padding between 100, 250
     const ackMsg = Buffer.concat([dataRLP, pad])
@@ -262,10 +248,6 @@ class ECIES {
       remoteNonce = decrypted.slice(64, 96)
     } else {
       const decoded = rlp.decode(decrypted)
-      // TODO: dev test removable
-      console.log(chalk.cyan('ECIES parseAckPlain(): '))
-      console.log(chalk.gray(JSON.stringify(decoded)))
-
       remoteEphemeralPublicKey = util.id2pk(decoded[0])
       remoteNonce = decoded[1]
     }
@@ -296,10 +278,7 @@ class ECIES {
 
     this._egressMac.updateHeader(header)
     const tag = this._egressMac.digest()
-    // TODO: dev test removable
-    console.log(chalk.cyan('ECIES createHeader(): '))
-    console.log(chalk.gray(JSON.stringify(header)))
-
+    debug(`ECIES create Header: ${header.toString('base64')}`)
     return Buffer.concat([header, tag])
   }
 
