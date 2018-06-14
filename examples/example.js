@@ -19,7 +19,7 @@ const nodes = [{
 
 // -------------------------  NODE DISCOVERY PROTOCOL  -------------------------
 const ndp = new devp2p.NDP(PRIVATE_KEY, {
-  refreshInterval: 3000,
+  refreshInterval: 30000,
   endpoint: {
     address: '0.0.0.0',
     udpPort: port,
@@ -113,20 +113,18 @@ rlp.on('peer:added', (peer) => {
   })
 
   // check CHECK_BLOCK
-  let forkDrop = null
+  // let forkDrop = null
   let forkVerified = false
   sec.once('status', () => {
-    console.log(chalk.red('status'))
+    console.log(chalk.red('Doing nothing hahahah.....'))
     // sec.sendMessage(devp2p.SEC.MESSAGE_CODES.GET_BLOCK_HEADERS, [CHECK_BLOCK_NR, 1, 0, 0])
-    forkDrop = setTimeout(() => {
-      peer.disconnect(devp2p.RLPx.DISCONNECT_REASONS.USELESS_PEER)
-    }, ms('15s'))
-    peer.once('close', () => clearTimeout(forkDrop))
+    // forkDrop = setTimeout(() => {
+    //   peer.disconnect(devp2p.RLPx.DISCONNECT_REASONS.USELESS_PEER)
+    // }, ms('15s'))
+    // peer.once('close', () => clearTimeout(forkDrop))
   })
 
   sec.on('message', async (code, payload) => {
-    console.log(chalk.red('Message'))
-    console.log(code)
     if (code in requests.msgTypes) {
       requests.msgTypes[code] += 1
     } else {
@@ -134,9 +132,12 @@ rlp.on('peer:added', (peer) => {
     }
 
     switch (code) {
+      case devp2p.SEC.MESSAGE_CODES.STATUS:
+        console.log(chalk.red('Doing STATUS Block...'))
+        break
       case devp2p.SEC.MESSAGE_CODES.NEW_BLOCK_HASHES:
         // TODO: console
-        console.log('NEW_BLOCK_HASHES')
+        console.log(chalk.red('NEW_BLOCK_HASHES'))
         if (!forkVerified) break
         for (let item of payload) {
           const blockHash = item[0]
@@ -150,7 +151,7 @@ rlp.on('peer:added', (peer) => {
 
       case devp2p.SEC.MESSAGE_CODES.TX:
         // TODO: console
-        console.log('TX')
+        console.log(chalk.red('TX'))
         if (!forkVerified) break
         for (let item of payload) {
           // Added
@@ -162,7 +163,7 @@ rlp.on('peer:added', (peer) => {
 
       case devp2p.SEC.MESSAGE_CODES.GET_BLOCK_HEADERS:
         // TODO: console
-        console.log('GET_BLOCK_HEADERS')
+        console.log(chalk.red('GET_BLOCK_HEADERS'))
         const headers = []
         if (devp2p._util.buffer2int(payload[0]) === CHECK_BLOCK_NR) {
           headers.push(CHECK_BLOCK_HEADER)
@@ -176,7 +177,7 @@ rlp.on('peer:added', (peer) => {
 
       case devp2p.SEC.MESSAGE_CODES.BLOCK_HEADERS:
         // TODO: console
-        console.log('BLOCK_HEADERS')
+        console.log(chalk.red('BLOCK_HEADERS'))
         if (!forkVerified) {
           if (payload.length !== 1) {
             console.log(`${addr} expected one header for ${CHECK_BLOCK_TITLE} verify (received: ${payload.length})`)
@@ -226,7 +227,7 @@ rlp.on('peer:added', (peer) => {
 
       case devp2p.SEC.MESSAGE_CODES.GET_BLOCK_BODIES:
         // TODO: console
-        console.log('GET_BLOCK_BODIES')
+        console.log(chalk.red('GET_BLOCK_BODIES'))
         if (requests.headers.length === 0 && requests.msgTypes[code] >= 8) {
           peer.disconnect(devp2p.RLPx.DISCONNECT_REASONS.USELESS_PEER)
         } else {
@@ -236,7 +237,7 @@ rlp.on('peer:added', (peer) => {
 
       case devp2p.SEC.MESSAGE_CODES.BLOCK_BODIES:
         // TODO: console
-        console.log('BLOCK_BODIES')
+        console.log(chalk.red('BLOCK_BODIES'))
         if (!forkVerified) break
         if (payload.length !== 1) {
           console.log(`${addr} not more than one block body expected (received: ${payload.length})`)
@@ -262,7 +263,7 @@ rlp.on('peer:added', (peer) => {
 
       case devp2p.SEC.MESSAGE_CODES.NEW_BLOCK:
         // TODO: console
-        console.log('NEW_BLOCK')
+        console.log(chalk.red('NEW_BLOCK'))
         if (!forkVerified) break
         // Added
         console.log(payload[0])
