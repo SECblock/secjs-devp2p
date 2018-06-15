@@ -9,12 +9,12 @@ const secjsRlp = new SECRlpEncode()
 // const SECBlock = require('secjs-block')
 // const SECTx = require('secjs-tx')
 
-const port = '30303'
+const port = '13331'
 const PRIVATE_KEY = crypto.randomBytes(32)
 
 const nodes = [{
-  'ip': '192.168.1.100',
-  'port': '30303'
+  'ip': '18.185.61.169',
+  'port': '13331'
 }]
 
 // -------------------------  NODE DISCOVERY PROTOCOL  -------------------------
@@ -325,7 +325,7 @@ async function isValidBlock (block) {
 }
 
 // accept incoming connections
-rlp.listen(30303, '0.0.0.0')
+rlp.listen(13331, '0.0.0.0')
 
 // for debug
 // nodes.forEach((node) => {
