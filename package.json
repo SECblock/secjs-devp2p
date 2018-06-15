@@ -1,6 +1,6 @@
 {
-  "name": "secjs-devp2p",
-  "version": "1.0.0",
+  "name": "@sec-block/secjs-devp2p",
+  "version": "1.0.9",
   "description": "A JavaScript implementation of ÐΞVp2p Protocol for SECBlock, Based on Ethereum",
   "keywords": [
     "sec",
@@ -9,13 +9,13 @@
     "ndp",
     "rlp"
   ],
-  "homepage": "https://github.com/SECblock/secjs-devp2p",
+  "homepage": "https://github.com/SEC-Block/secjs-devp2p",
   "bugs": {
-    "url": "https://github.com/SECblock/secjs-devp2p/issues"
+    "url": "https://github.com/SEC-Block/secjs-devp2p/issues"
   },
   "license": "MIT",
   "contributors": [
-    "Li, Yuan <abysmli@gmail.com> (https://github.com/SECblock)"
+    "Li, Yuan <abysmli@gmail.com> (https://github.com/abysmli)"
   ],
   "files": [
     "src",
@@ -24,7 +24,7 @@
   "main": "./lib/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/SECblock/secjs-devp2p.git"
+    "url": "https://github.com/SEC-Block/secjs-devp2p.git"
   },
   "engines": {
     "node": ">=6.0"
