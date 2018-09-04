@@ -24,7 +24,12 @@ const MESSAGE_CODES = {
   BLOCK_HEADERS: 0x04,
   GET_BLOCK_BODIES: 0x05,
   BLOCK_BODIES: 0x06,
-  NEW_BLOCK: 0x07
+  NEW_BLOCK: 0x07,
+
+  GET_NODE_DATA: 0x08,
+  NODE_DATA: 0x09,
+  GET_RECEIPTS: 0x0a,
+  RECEIPTS: 0x0b
 }
 
 class SEC extends EventEmitter {
@@ -73,6 +78,14 @@ class SEC extends EventEmitter {
       case MESSAGE_CODES.NEW_BLOCK:
         if (this._version >= SEC.sec.version) break
         return
+        
+      case MESSAGE_CODES.GET_NODE_DATA:
+      case MESSAGE_CODES.NODE_DATA:
+      case MESSAGE_CODES.GET_RECEIPTS:
+      case MESSAGE_CODES.RECEIPTS:
+        if (this._version >= SEC.sec.version) break
+        return
+
       default:
         return
     }
@@ -135,6 +148,14 @@ class SEC extends EventEmitter {
       case MESSAGE_CODES.NEW_BLOCK:
         if (this._version >= SEC.sec.version) break
         throw new Error(`Code ${code} not allowed with version ${this._version}`)
+
+      case MESSAGE_CODES.GET_NODE_DATA:
+      case MESSAGE_CODES.NODE_DATA:
+      case MESSAGE_CODES.GET_RECEIPTS:
+      case MESSAGE_CODES.RECEIPTS:
+        if (this._version >= SEC.sec.version) break
+        throw new Error(`Code ${code} not allowed with version ${this._version}`)
+
       default:
         throw new Error(`Unknown code ${code}`)
     }
