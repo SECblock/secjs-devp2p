@@ -6,8 +6,6 @@ const assert = require('assert')
 const devp2p = require('../lib')
 const SECRlpEncode = require('@sec-block/secjs-rlp')
 const secjsRlp = new SECRlpEncode()
-// const SECBlock = require('secjs-block')
-// const SECTx = require('secjs-tx')
 
 const port = '13331'
 const PRIVATE_KEY = crypto.randomBytes(32)
