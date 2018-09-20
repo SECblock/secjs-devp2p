@@ -50,7 +50,7 @@ class SEC extends EventEmitter {
   static sec = {
     name: 'sec',
     version: 1,
-    length: 8,
+    length: 12, // maybe length 8?
     constructor: SEC
   }
 
