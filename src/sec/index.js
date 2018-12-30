@@ -78,7 +78,6 @@ class SEC extends EventEmitter {
       case MESSAGE_CODES.NEW_BLOCK:
         if (this._version >= SEC.sec.version) break
         return
-        
       case MESSAGE_CODES.GET_NODE_DATA:
       case MESSAGE_CODES.NODE_DATA:
       case MESSAGE_CODES.GET_RECEIPTS:

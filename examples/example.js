@@ -278,49 +278,49 @@ rlp.on('error', err => console.error(chalk.red(`RLP | RLP error: ${err.stack || 
 
 const getPeerAddr = (peer) => `${peer._socket.remoteAddress}:${peer._socket.remotePort}`
 
-const txCache = new LRUCache({
-  max: 1000
-})
+// const txCache = new LRUCache({
+//   max: 1000
+// })
 
-function onNewTx (tx, peer) {
-  const txHashHex = tx.hash().toString('hex')
-  if (txCache.has(txHashHex)) return
-  txCache.set(txHashHex, true)
-  console.log(`New tx: ${txHashHex} (from ${getPeerAddr(peer)})`)
-}
+// function onNewTx (tx, peer) {
+//   const txHashHex = tx.hash().toString('hex')
+//   if (txCache.has(txHashHex)) return
+//   txCache.set(txHashHex, true)
+//   console.log(`New tx: ${txHashHex} (from ${getPeerAddr(peer)})`)
+// }
 
 const blocksCache = new LRUCache({
   max: 100
 })
 
-function onNewBlock (block, peer) {
-  const blockHashHex = block.hash().toString('hex')
-  const blockNumber = devp2p._util.buffer2int(block.header.number)
-  if (blocksCache.has(blockHashHex)) return
-  blocksCache.set(blockHashHex, true)
-  console.log('----------------------------------------------------------------------------------------------------------')
-  console.log(`New block ${blockNumber}: ${blockHashHex} (from ${getPeerAddr(peer)})`)
-  console.log('----------------------------------------------------------------------------------------------------------')
-  for (let tx of block.transactions) onNewTx(tx, peer)
-}
+// function onNewBlock (block, peer) {
+//   const blockHashHex = block.hash().toString('hex')
+//   const blockNumber = devp2p._util.buffer2int(block.header.number)
+//   if (blocksCache.has(blockHashHex)) return
+//   blocksCache.set(blockHashHex, true)
+//   console.log('----------------------------------------------------------------------------------------------------------')
+//   console.log(`New block ${blockNumber}: ${blockHashHex} (from ${getPeerAddr(peer)})`)
+//   console.log('----------------------------------------------------------------------------------------------------------')
+//   for (let tx of block.transactions) onNewTx(tx, peer)
+// }
 
-function isValidTx (tx) {
-  return tx.validate(false)
-}
+// function isValidTx (tx) {
+//   return tx.validate(false)
+// }
 
-async function isValidBlock (block) {
-  if (!block.validateUnclesHash()) return false
-  if (!block.transactions.every(isValidTx)) return false
-  return new Promise((resolve, reject) => {
-    block.genTxTrie(() => {
-      try {
-        resolve(block.validateTransactionsTrie())
-      } catch (err) {
-        reject(err)
-      }
-    })
-  })
-}
+// async function isValidBlock (block) {
+//   if (!block.validateUnclesHash()) return false
+//   if (!block.transactions.every(isValidTx)) return false
+//   return new Promise((resolve, reject) => {
+//     block.genTxTrie(() => {
+//       try {
+//         resolve(block.validateTransactionsTrie())
+//       } catch (err) {
+//         reject(err)
+//       }
+//     })
+//   })
+// }
 
 // accept incoming connections
 rlp.listen(13331, '0.0.0.0')
