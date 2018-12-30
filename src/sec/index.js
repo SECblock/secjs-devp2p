@@ -29,7 +29,8 @@ const MESSAGE_CODES = {
   GET_NODE_DATA: 0x08,
   NODE_DATA: 0x09,
   GET_RECEIPTS: 0x0a,
-  RECEIPTS: 0x0b
+  RECEIPTS: 0x0b,
+  NODES_IP_SYNC: 0x0c
 }
 
 class SEC extends EventEmitter {
@@ -50,7 +51,7 @@ class SEC extends EventEmitter {
   static sec = {
     name: 'sec',
     version: 1,
-    length: 12, // maybe length 8?
+    length: 13, // maybe length 8?
     constructor: SEC
   }
 
@@ -82,6 +83,7 @@ class SEC extends EventEmitter {
       case MESSAGE_CODES.NODE_DATA:
       case MESSAGE_CODES.GET_RECEIPTS:
       case MESSAGE_CODES.RECEIPTS:
+      case MESSAGE_CODES.NODES_IP_SYNC:
         if (this._version >= SEC.sec.version) break
         return
 
@@ -152,6 +154,7 @@ class SEC extends EventEmitter {
       case MESSAGE_CODES.NODE_DATA:
       case MESSAGE_CODES.GET_RECEIPTS:
       case MESSAGE_CODES.RECEIPTS:
+      case MESSAGE_CODES.NODES_IP_SYNC:
         if (this._version >= SEC.sec.version) break
         throw new Error(`Code ${code} not allowed with version ${this._version}`)
 
