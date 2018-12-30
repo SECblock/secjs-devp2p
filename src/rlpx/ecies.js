@@ -2,6 +2,8 @@ const crypto = require('crypto')
 const secp256k1 = require('secp256k1')
 const Buffer = require('safe-buffer').Buffer
 const SECRlpEncode = require('@sec-block/secjs-rlp')
+const createDebugLogger = require('debug')
+const debug = createDebugLogger('devp2p:rlpx:ecies')
 const util = require('../util')
 const MAC = require('./mac')
 const rlp = new SECRlpEncode()
@@ -74,6 +76,11 @@ class ECIES {
     const tag = crypto.createHmac('sha256', mkey).update(Buffer.concat([dataIV, sharedMacData])).digest()
 
     const publicKey = secp256k1.publicKeyCreate(privateKey, false)
+    debug('create publicKey: ' + publicKey)
+    debug('create dataIV: ' + dataIV)
+    debug('create sharedMacData: ' + sharedMacData)
+    debug('create mkey: ' + mkey)
+    debug('create tag: ' + tag)
     return Buffer.concat([publicKey, dataIV, tag])
   }
 
@@ -95,6 +102,12 @@ class ECIES {
       sharedMacData = Buffer.from([])
     }
     const _tag = crypto.createHmac('sha256', mkey).update(Buffer.concat([dataIV, sharedMacData])).digest()
+    debug('remote publicKey: ' + publicKey)
+    debug('remote dataIV: ' + dataIV)
+    debug('remote mkey: ' + mkey)
+    debug('remote tag: ' + tag)
+    debug('local tag: ' + _tag)
+    debug('locat sharedMacData: ' + sharedMacData)
     util.assertEq(_tag, tag, 'should have valid tag')
 
     // decrypt data
@@ -160,6 +173,7 @@ class ECIES {
   parseAuthPlain (data, sharedMacData = null) {
     const prefix = sharedMacData !== null ? sharedMacData : Buffer.from([])
     this._remoteInitMsg = Buffer.concat([prefix, data])
+    debug('parseAuthPlain')
     const decrypted = this._decryptMessage(data, sharedMacData)
 
     let signature = null
@@ -200,6 +214,7 @@ class ECIES {
   }
 
   parseAuthEIP8 (data) {
+    debug('parseAuthEIP8')
     const size = util.buffer2int(data.slice(0, 2)) + 2
     util.assertEq(data.length, size, 'message length different from specified size (EIP8)')
     this.parseAuthPlain(data.slice(2), data.slice(0, 2))
@@ -234,6 +249,7 @@ class ECIES {
   }
 
   parseAckPlain (data, sharedMacData = null) {
+    debug('parseAckPlain')
     const decrypted = this._decryptMessage(data, sharedMacData)
 
     let remoteEphemeralPublicKey = null
